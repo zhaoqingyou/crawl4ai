@@ -441,7 +441,7 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
         status_code = 200  # Default for local/raw HTML
         screenshot_data = None
 
-        if url.startswith(("http://", "https://")):
+        if url.startswith(("http://", "https://", "view-source:")):
             return await self._crawl_web(url, config)
 
         elif url.startswith("file://"):
@@ -571,6 +571,14 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
 
             async def handle_response_capture(response):
                 try:
+                    try:
+                        # body = await response.body()
+                        # json_body = await response.json()
+                        text_body = await response.text()
+                    except Exception as e:
+                        body = None
+                        # json_body = None
+                        # text_body = None
                     captured_requests.append({
                         "event_type": "response",
                         "url": response.url,
@@ -579,7 +587,12 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
                         "headers": dict(response.headers), # Convert Header dict
                         "from_service_worker": response.from_service_worker,
                         "request_timing": response.request.timing, # Detailed timing info
-                        "timestamp": time.time()
+                        "timestamp": time.time(),
+                        "body" : {
+                            # "raw": body,
+                            # "json": json_body,
+                            "text": text_body
+                        }
                     })
                 except Exception as e:
                     if self.logger:
@@ -771,7 +784,7 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
             except Error:
                 visibility_info = await self.check_visibility(page)
 
-                if self.config.verbose:
+                if self.browser_config.config.verbose:
                     self.logger.debug(
                         message="Body visibility info: {info}",
                         tag="DEBUG",
@@ -1454,8 +1467,8 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
             buffered = BytesIO()
             img.save(buffered, format="JPEG")
             return base64.b64encode(buffered.getvalue()).decode("utf-8")
-        finally:
-            await page.close()
+        # finally:
+        #     await page.close()
 
     async def take_screenshot_naive(self, page: Page) -> str:
         """
@@ -1488,8 +1501,8 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
             buffered = BytesIO()
             img.save(buffered, format="JPEG")
             return base64.b64encode(buffered.getvalue()).decode("utf-8")
-        finally:
-            await page.close()
+        # finally:
+        #     await page.close()
 
     async def export_storage_state(self, path: str = None) -> dict:
         """
