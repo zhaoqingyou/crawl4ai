@@ -406,6 +406,7 @@ class AsyncWebCrawler:
                     return CrawlResultContainer(cached_result)
 
             except Exception as e:
+                print(f"异常信息：{e}")
                 error_context = get_error_context(sys.exc_info())
 
                 error_message = (

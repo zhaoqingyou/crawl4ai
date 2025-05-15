@@ -656,7 +656,8 @@ class LLMExtractionStrategy(ExtractionStrategy):
             self.total_usage.total_tokens += usage.total_tokens
 
             try:
-                response = response.choices[0].message.content
+                #把下面这行注释掉
+                # response = response.choices[0].message.content
                 blocks = None
 
                 if self.force_json_response:

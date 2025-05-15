@@ -92,6 +92,7 @@ async def stream_llm_response(url: str, markdown: str, query: str, provider: str
                 "role": "user"
             },
         ],
+        base_url="http://localhost:11434",
         stream=True,
     )
     

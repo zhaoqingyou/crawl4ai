@@ -5,10 +5,11 @@ from crawl4ai import *
 
 async def main():
     print("\n--- Using CSS Selectors ---")
-    browser_config = BrowserConfig(headless=True)
+    browser_config = BrowserConfig(headless=False)
     crawler_config = CrawlerRunConfig(
         #waterfall_Pq6qh
-        cache_mode=CacheMode.BYPASS, css_selector=".page-content_11Pd_"
+        cache_mode=CacheMode.BYPASS,
+        css_selector=".page-content_11Pd_"
     )
     async with AsyncWebCrawler(config=browser_config) as crawler:
 
