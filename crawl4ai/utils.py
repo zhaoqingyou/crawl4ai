@@ -1651,12 +1651,15 @@ def perform_completion_with_backoff(
 
     if kwargs.get("extra_args"):
         extra_args.update(kwargs["extra_args"])
-
+    # print(f"看看base_ur都有啥 : {base_url}")
+    # print(f"少了base_url 11111111111看看extra_args都有啥 : {extra_args}")
+    # print(f"user content:{prompt_with_variables}");
     for attempt in range(max_attempts):
         try:
             response = completion(
                 model=provider,
                 messages=[{"role": "user", "content": prompt_with_variables}],
+                api_base=base_url,
                 **extra_args,
             )
             return response  # Return the successful response
